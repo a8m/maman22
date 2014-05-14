@@ -10,6 +10,7 @@
 		98136B5119200D87006EC659 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		98136B5219200E1B006EC659 /* complex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = complex.h; sourceTree = "<group>"; };
 		98136B5319200F8C006EC659 /* complex.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = complex.c; sourceTree = "<group>"; };
+		98136B5419232E8A006EC659 /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -17,6 +18,7 @@
 			isa = PBXGroup;
 			children = (
 				98136B5119200D87006EC659 /* main.c */,
+				98136B5419232E8A006EC659 /* common.h */,
 				98136B5219200E1B006EC659 /* complex.h */,
 				98136B5319200F8C006EC659 /* complex.c */,
 			);

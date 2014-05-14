@@ -10,12 +10,6 @@
 #ifdef COMPLEX_H_
 #define COMPLEX_H_
 
-/*read.. should i used them?*/
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-
 #define ....
 
 typedef struct compleX{

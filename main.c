@@ -8,10 +8,17 @@
  */
 
 #include "complex.h"
+#include "common.h"
 
 
 int main()
 {
     startUserInterface();
     return 0;
+}
+
+void startUserInterface()
+{
+    printf("%s",START_MSG);
+
 }
