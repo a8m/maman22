@@ -7,18 +7,34 @@
  * =========================================================================================
  */
 
-#ifdef COMPLEX_H_
+#ifndef COMPLEX_H_
 #define COMPLEX_H_
 
-#define ....
+/*#define ....*/
 
 typedef struct compleX{
-    int a,b;
+    double a,b;
 } compleX;
 
-enum nameOfEnum{};
+/*extern global variables*/
+extern compleX a,b,c,d,e,f;
 
-/*functions declartion(void,int, more...)*/
+/* >>>>>>>>>>>>>>>>>>>>>>>>> FUNCTION DECLARTION >>>>>>>>>>>>>>>>>>>>>>>>> */
+
+/*
+ *set compleX variable with
+ *params: pointer to compleX, double a, double b
+ */
+void read_comp(compleX *cp, double a, double b);
+
+
+/*
+ *print compleX variable
+ *params: pointer to complex
+ *example: (a+bi) ===> 2.31 + 4.05i
+ */
+void print_comp(compleX *cp);
+
 
 
 #endif /* COMPLEX_H_ */
