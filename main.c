@@ -107,7 +107,7 @@ void startUserInterface()
             /*cmd name, variable name, rest parameters*/
             cmdName = strtok(command," ");
             varName = strtok(NULL,",");
-            rest = strtok(NULL,"\0");
+            rest = strtok(NULL,"");
             
             /*through over all command list*/
             for(i=0; cmd[i].func != NULL; i++)
@@ -151,13 +151,21 @@ void startUserInterface()
                 switch (paramState) {
                     case NONE:
                     {
-                        
+                        /*call command function with current variable*/
+                        cmd[funcIndex].func(storage[varIndex].var);
+                        break;
                     }
-                        break;
                         
-                    default:
+                    case ARGS:
+                    {
+                        double a = atof(strtok(rest,","));
+                        double b = atof(strtok(NULL,","));
+                        cmd[funcIndex].func(storage[varIndex].var, a,b);
+                        printf("Read to variable %s, two inputs: %.2f, %.2f\n", storage[varIndex].name, a, b);
                         break;
+                    }
                 }
+                
             }
         
         

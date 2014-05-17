@@ -25,3 +25,8 @@ void print_comp(compleX *cp)
     printf("%.2f + %.2fi\n", (*cp).a, (*cp).b);
 }
 
+/*calculate the sum between two complex numbers*/
+void add_comp(compleX *cpA, compleX *cpB)
+{
+
+}

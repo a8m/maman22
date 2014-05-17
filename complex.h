@@ -35,6 +35,11 @@ void read_comp(compleX *cp, double a, double b);
  */
 void print_comp(compleX *cp);
 
+/*add two complex numbers
+ *and print the sum of them
+ */
+void add_comp(compleX *cpA, compleX *cpB);
+
 
 
 #endif /* COMPLEX_H_ */
