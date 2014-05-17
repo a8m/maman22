@@ -45,6 +45,12 @@ struct {
 }cmd[] = {
     {"read_comp", read_comp, ARGS},
     {"print_comp", print_comp, NONE},
+    {"add_comp", add_comp, VAR},
+    {"sub_comp", sub_comp, VAR},
+    {"mult_comp_real", mult_comp_real, SCALAR},
+    {"mult_comp_img", mult_comp_img, SCALAR},
+    {"mult_comp_comp", mult_comp_comp, VAR},
+    {"abs_comp", abs_comp, NONE},
     {"not_valid", NULL, NONE}
 };
 
@@ -53,8 +59,8 @@ struct {
 int main()
 {
     read_comp(&a, 1.00, 2.00);
+    read_comp(&b, 1.00, 2.00);
     startUserInterface();
-    print_comp(&a);
     return EXIT;
 }
 
@@ -92,8 +98,14 @@ void startUserInterface()
             if(i > MAX_COMMAND){
                 handleErrorInput("long", CMD_LONG);
                 state = ERROR;
+                clearBuffer();
             }
         }
+        if (strcmp(command, "halt") == EQAULS){
+            printf("Stop runnig programg...\nBye Bye !!");
+            break;
+        }
+        
         if( i < MIN_COMMAND){
             handleErrorInput("short", CMD_LONG);
             state = ERROR;
@@ -105,6 +117,10 @@ void startUserInterface()
             /*copy command input*/
             strcpy(copyCommand, command);
             /*cmd name, variable name, rest parameters*/
+            
+        /*================== check length before i scan with srttok */
+        /*do validation of scaces with copyCommand*/
+            
             cmdName = strtok(command," ");
             varName = strtok(NULL,",");
             rest = strtok(NULL,"");
@@ -164,7 +180,49 @@ void startUserInterface()
                         printf("Read to variable %s, two inputs: %.2f, %.2f\n", storage[varIndex].name, a, b);
                         break;
                     }
-                }
+                    
+                    case VAR:
+                    {
+                        int len;
+                        len = strlen(rest);
+                        if(len > 1)
+                            handleErrorInput("number of arguments after variable", INVALID_ARGS);
+                        else{
+                            for(i=0; storage[i].var != NULL; i++){
+                                if(strcmp(rest, storage[i].name) == EQAULS)
+                                    break;
+                            }
+                            if(storage[i].var == NULL)
+                                handleErrorInput(rest, VAR_NOT_EXIST);
+                            else
+                                cmd[funcIndex].func(storage[varIndex].var, storage[i].var);
+                        }
+                        
+                        break;
+                    }/*end param case */
+                        
+                    case SCALAR:
+                    {
+                        int len;
+                        len = strlen(rest);
+                        if(len > MAX_SCALAR)
+                            handleErrorInput("number of arguments after variable", INVALID_ARGS);
+                        else{
+                            char isDigitFlag = rest[0];
+                            if(!isDigitFlag){
+                                handleErrorInput("scalar argument, inster real number please", INVALID_ARGS);
+                                break;
+                            }else{
+                                double num = atof(rest);
+                                cmd[funcIndex].func(storage[varIndex].var, num);
+                            }
+                        }
+                    
+                        break;
+                    }/*end scalar case*/
+                        
+                        
+                }/*end switch statement*/
                 
             }
         
@@ -183,7 +241,11 @@ void startUserInterface()
         }
         varName = "";
         rest = "";
-        state = WAIT_FOR_CMD_NAME;
+        if(state == USER_EXIT)
+            break;
+        else
+            state = WAIT_FOR_CMD_NAME;
+        
     }/*END FOREVER*/
     
 }
