@@ -13,7 +13,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
+#include <ctype.h>
+#include <math.h>
 
 /*read.. should i used them?*/
 
@@ -31,7 +32,7 @@ enum errorMsgs         {CMD_NOT_EXIST, INVALID_ARGS, CMD_LONG, VAR_NOT_EXIST};
 /* >>>>>>>>>>>>>>>>>>>>>>>>> GLOBAL ENUMS >>>>>>>>>>>>>>>>>>>>>>>>> */
 enum inputValidation   {INVALID, VALID};
 enum returnFunction    {FALSE, TRUE};
-enum inputState        {WAIT_FOR_CMD_NAME, WAIT_FOR_VAR, WAIT_FOR_PARAMS, ERROR};
+enum inputState        {WAIT_FOR_CMD_NAME, WAIT_FOR_VAR, WAIT_FOR_PARAMS, ERROR, USER_EXIT};
 enum inputParams       {VAR, ARGS, SCALAR, NONE};
 enum spaceFlags        {BEFORE, AFTER};
 
@@ -45,7 +46,8 @@ int stateAsCmd(int indexOfCmd);
 #define START_MSG       "System waiting your command,\nuse --help to see function description"
 #define FOREVER         for(;;)
 #define MAX_COMMAND     30
-#define MIN_COMMAND     8
+#define MIN_COMMAND     4
+#define MAX_SCALAR      4
 #define SPACE_KEY       32
 #define ENTER_KEY       10
 #define MAX_SPACE_BEFORE 1
