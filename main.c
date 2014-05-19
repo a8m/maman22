@@ -98,6 +98,7 @@ void startUserInterface()
                 handleErrorInput("long", CMD_LONG);
                 state = ERROR;
                 clearBuffer();
+                break;
             }
         }
         
@@ -288,7 +289,6 @@ void clearBuffer()
     c = getchar();
     while(c)
         if(c == ENTER_KEY){
-            putchar(c);
             return;
         }
         else
