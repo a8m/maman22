@@ -12,14 +12,19 @@
 
 /*List: Errors*/
 char *errorMsgs[] = {
-    "Error: command %s does not exist\n",
-    "Error: invalid %s\n",
-    "Error: command too %s!!\n",
-    "Error: variable %s does not exist!\n"
+    "*ERROR: command %s does not exist\n",
+    "*ERROR: invalid %s\n",
+    "*ERROR: command too %s!!\n",
+    "*ERROR: variable %s does not exist!\n",
+    "*ERROR: Low number of %s\n",
 };
 
-/*need to use a global variables*/
-/*use extern in the other file in  .h or .c?*/
+char *systemMsgs[] = {
+    "Please enter valid function name and suitable parameters\nUsage [function_name] [variable],[parameters:optionl]",
+    "Available functions:\nread_comp           [complex number],[parameter],[parameter]\nprint_comp          [complex number]\nadd_comp            [complex number],[complex number]\nsub_comp            [complex number]\nmult_comp_real      [complex number],[scalar]\nmult_comp_img       [complex number],[scalar]\nmult_comp_comp      [complex number],[complex number]\nabs_comp            [complex number]\nhalt                [none]",
+    "INFORM: Program halted, press enter [ret] key to exit..."
+};
+
 compleX a,b,c,d,e,f;
 
 /*an array to store reference all complex numbers variabls*/
@@ -37,7 +42,6 @@ struct {
 };
 
 /*an array that store all cmd-complex function*/
-/*PARAMS: {VAR, ARGS, SCALAR, NONE}*/
 struct {
     char *name;
     void (*func)();
@@ -58,37 +62,32 @@ struct {
 
 int main()
 {
-    read_comp(&a, 1.00, 2.00);
-    read_comp(&b, 1.00, 2.00);
     startUserInterface();
     return EXIT;
 }
 
 void startUserInterface()
 {
+    char command[MAX_COMMAND];
+    /*define and set state for system*/
+    int state = WAIT_FOR_CMD_NAME, paramState = NONE,
+    funcIndex = 0, varIndex = 0;
+    int i,c = 0;
+    char ch;
+    char *cmdName = "", *varName = "", *rest = "";
+    
     /*Print first welcome and help message*/
     printf("%s\n",LINE);
     printf("\t%s, %s\n",PROG_NAME, VERSION);
     printf("%s\n",LINE);
     
-    printf("%s\n",START_MSG);
+    printf("%s\n\n",systemMsgs[START]);
+    printf("%s\n%s\n",systemMsgs[HELP],LINE);
     /*end welcom and help message*/
-    
-    char command[MAX_COMMAND];
-    char copyCommand[MAX_COMMAND];
-    /*define and set state for system*/
-    int state = WAIT_FOR_CMD_NAME;
-    int paramState = NONE;
-    int funcIndex = 0, varIndex = 0;
-    int i;
-    int c = 0;
-    char ch;
-    char *cmdName = "";
-    char *varName = "";
-    char *rest = "";
     
     /*get user input*/
     FOREVER{
+        printf("-> ");
         /*Scan all argument until you get enter-key*/
         for(i = 0; c != ENTER_KEY; i++){
             c = getchar();
@@ -101,30 +100,51 @@ void startUserInterface()
                 clearBuffer();
             }
         }
-        if (strcmp(command, "halt") == EQAULS){
-            printf("Stop runnig programg...\nBye Bye !!");
-            break;
-        }
         
+        /*if user enter halt, make sure..and stop running*/
+        if (strcmp(command, "halt") == EQAULS || strcmp(command, "halt") == TRUE){
+            printf("%s",systemMsgs[HALT]);
+            {
+                int decision = getchar();
+                if (decision == ENTER_KEY)
+                    break;
+                else
+                    state = ERROR;
+            }
+        }
+        /*add min-length command validation*/
         if( i < MIN_COMMAND){
             handleErrorInput("short", CMD_LONG);
             state = ERROR;
         }
         c = 0;
         
-        /*=================================COMMAND-NAME=======================*/
+        /*=================================CHECK-COMMAND=========================*/
+        
         if (state == WAIT_FOR_CMD_NAME) {
-            /*copy command input*/
-            strcpy(copyCommand, command);
-            /*cmd name, variable name, rest parameters*/
             
-        /*================== check length before i scan with srttok */
-        /*do validation of scaces with copyCommand*/
+            int commandLength, funcLength, varLength;
+            commandLength = strlen(command);
             
             cmdName = strtok(command," ");
-            varName = strtok(NULL,",");
-            rest = strtok(NULL,"");
+            funcLength = strlen(cmdName);
             
+            if(commandLength - funcLength >= 2){
+                varName = strtok(NULL,",");
+                varLength = strlen(varName);
+                
+                if(commandLength - funcLength - varLength >= 2)
+                    rest = strtok(NULL,"");
+            }else{
+                state = ERROR;
+                handleErrorInput("parameters", LOW_ARGS);
+            }
+        }
+        
+        /*=================================END-CHECK-COMMAND=======================*/
+        
+        /*=================================FIND-FUNCITON==========================*/
+        if (state != ERROR) {
             /*through over all command list*/
             for(i=0; cmd[i].func != NULL; i++)
                 if(strcmp(cmdName, cmd[i].name) == EQAULS)
@@ -140,9 +160,9 @@ void startUserInterface()
             }
         }
         
-        /*=================================END-COMMAND-NAME=======================*/
+        /*=================================END-FIND-FUNCTION====================*/
         
-        /*=================================VAR-NAME=======================*/
+        /*=================================VAR-NAME=============================*/
         
         /*through over all variable list*/
         if (state == WAIT_FOR_VAR) {
@@ -174,8 +194,16 @@ void startUserInterface()
                         
                     case ARGS:
                     {
-                        double a = atof(strtok(rest,","));
-                        double b = atof(strtok(NULL,","));
+                        int restLength = strlen(rest);
+                        double a,b;
+                        if (restLength < MIN_ARGS) {
+                            state = ERROR;
+                            handleErrorInput("parameters", LOW_ARGS);
+                            break;
+                        }
+                        a = atof(strtok(rest,","));
+                        b = atof(strtok(NULL,","));
+                        printf("%s", rest);
                         cmd[funcIndex].func(storage[varIndex].var, a,b);
                         printf("Read to variable %s, two inputs: %.2f, %.2f\n", storage[varIndex].name, a, b);
                         break;
@@ -226,25 +254,13 @@ void startUserInterface()
                 
             }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
         /*clear command variable*/
         for (i = 0; i < MAX_COMMAND; i++) {
             command[i] = 0;
         }
         varName = "";
         rest = "";
-        if(state == USER_EXIT)
-            break;
-        else
-            state = WAIT_FOR_CMD_NAME;
+        state = WAIT_FOR_CMD_NAME;
         
     }/*END FOREVER*/
     
@@ -261,7 +277,6 @@ void handleErrorInput(char *command, int msgIndex)
 {
     printf("\n%s\n",LINE);
     printf(errorMsgs[msgIndex],command);
-    printf("Try Again and Press Enter ->\n");
     printf("%s\n\n",LINE);
 }
 
@@ -272,8 +287,10 @@ void clearBuffer()
     int c;
     c = getchar();
     while(c)
-        if(c == ENTER_KEY)
+        if(c == ENTER_KEY){
+            putchar(c);
             return;
+        }
         else
             c = getchar();
 }
