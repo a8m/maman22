@@ -204,7 +204,6 @@ void startUserInterface()
                         }
                         a = atof(strtok(rest,","));
                         b = atof(strtok(NULL,","));
-                        printf("%s", rest);
                         cmd[funcIndex].func(storage[varIndex].var, a,b);
                         printf("Read to variable %s, two inputs: %.2f, %.2f\n", storage[varIndex].name, a, b);
                         break;
