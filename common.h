@@ -41,6 +41,7 @@ void startUserInterface();
 void handleErrorInput(char *command, int msgIndex);
 void clearBuffer();
 int stateAsCmd(int indexOfCmd);
+void clearCommandString(char *command);
 
 /* prints simple UI that manages inputed commands */
 #define FOREVER         for(;;)

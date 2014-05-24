@@ -75,18 +75,19 @@ void startUserInterface()
     int i,c = 0;
     char ch;
     char *cmdName = "", *varName = "", *rest = "";
-    
+
     /*Print first welcome and help message*/
     printf("%s\n",LINE);
     printf("\t%s, %s\n",PROG_NAME, VERSION);
     printf("%s\n",LINE);
-    
+
     printf("%s\n\n",systemMsgs[START]);
     printf("%s\n%s\n",systemMsgs[HELP],LINE);
     /*end welcom and help message*/
-    
+
     /*get user input*/
     FOREVER{
+        clearCommandString(command);
         printf("-> ");
         /*Scan all argument until you get enter-key*/
         for(i = 0; c != ENTER_KEY; i++){
@@ -101,9 +102,9 @@ void startUserInterface()
                 break;
             }
         }
-        
+
         /*if user enter halt, make sure..and stop running*/
-        if (strcmp(command, "halt") == EQAULS || strcmp(command, "halt") == TRUE){
+        if (strcmp(command, "halt") == EQAULS){
             printf("%s",systemMsgs[HALT]);
             {
                 int decision = getchar();
@@ -119,21 +120,21 @@ void startUserInterface()
             state = ERROR;
         }
         c = 0;
-        
+
         /*=================================CHECK-COMMAND=========================*/
-        
+
         if (state == WAIT_FOR_CMD_NAME) {
-            
+
             int commandLength, funcLength, varLength;
             commandLength = strlen(command);
-            
+
             cmdName = strtok(command," ");
             funcLength = strlen(cmdName);
-            
+
             if(commandLength - funcLength >= 2){
                 varName = strtok(NULL,",");
                 varLength = strlen(varName);
-                
+
                 if(commandLength - funcLength - varLength >= 2)
                     rest = strtok(NULL,"");
             }else{
@@ -141,16 +142,16 @@ void startUserInterface()
                 handleErrorInput("parameters", LOW_ARGS);
             }
         }
-        
+
         /*=================================END-CHECK-COMMAND=======================*/
-        
+
         /*=================================FIND-FUNCITON==========================*/
         if (state != ERROR) {
             /*through over all command list*/
             for(i=0; cmd[i].func != NULL; i++)
                 if(strcmp(cmdName, cmd[i].name) == EQAULS)
                     break;
-            
+
             if(cmd[i].func == NULL){
                 state = ERROR;
                 handleErrorInput(cmdName, CMD_NOT_EXIST);
@@ -160,11 +161,11 @@ void startUserInterface()
                 funcIndex = i;
             }
         }
-        
+
         /*=================================END-FIND-FUNCTION====================*/
-        
+
         /*=================================VAR-NAME=============================*/
-        
+
         /*through over all variable list*/
         if (state == WAIT_FOR_VAR) {
             for(i=0; storage[i].var != NULL; i++){
@@ -180,9 +181,9 @@ void startUserInterface()
                 varIndex = i;
             }
         }
-        
+
         /*=================================END-VAR-NAME=======================*/
-        
+
             /*scan variables from input*/
             if(state == WAIT_FOR_PARAMS){
                 switch (paramState) {
@@ -192,7 +193,7 @@ void startUserInterface()
                         cmd[funcIndex].func(storage[varIndex].var);
                         break;
                     }
-                        
+
                     case ARGS:
                     {
                         int restLength = strlen(rest);
@@ -208,7 +209,7 @@ void startUserInterface()
                         printf("Read to variable %s, two inputs: %.2f, %.2f\n", storage[varIndex].name, a, b);
                         break;
                     }
-                    
+
                     case VAR:
                     {
                         int len;
@@ -225,10 +226,10 @@ void startUserInterface()
                             else
                                 cmd[funcIndex].func(storage[varIndex].var, storage[i].var);
                         }
-                        
+
                         break;
                     }/*end param case */
-                        
+
                     case SCALAR:
                     {
                         int len;
@@ -245,25 +246,21 @@ void startUserInterface()
                                 cmd[funcIndex].func(storage[varIndex].var, num);
                             }
                         }
-                    
+
                         break;
                     }/*end scalar case*/
-                        
-                        
+
+
                 }/*end switch statement*/
-                
+
             }
-        
-        /*clear command variable*/
-        for (i = 0; i < MAX_COMMAND; i++) {
-            command[i] = 0;
-        }
+
         varName = "";
         rest = "";
         state = WAIT_FOR_CMD_NAME;
-        
+
     }/*END FOREVER*/
-    
+
 }
 
 /*return no. of state according cmd name*/
@@ -294,9 +291,15 @@ void clearBuffer()
             c = getchar();
 }
 
+/*clear command string*/
+void clearCommandString(char *command)
+{
+    int i ;
 
-
-
+    for (i = 0; i < MAX_COMMAND; i++){
+         command[i] = 0;
+     }
+}
 
 
 

@@ -22,7 +22,9 @@ void read_comp(compleX *cp, double a, double b)
 /* add complex number name to*/
 void print_comp(compleX *cp)
 {
+    printf("%s\n*SYSTEM: Print Complex Number : ",LINE);
     printf("%.2f + %.2fi\n", (*cp).a, (*cp).b);
+    printf("%s\n",LINE);
 }
 
 /*calculate the sum between two complex numbers*/
@@ -43,7 +45,7 @@ void sub_comp(compleX *cpA, compleX *cpB)
     compleX temp;
     temp.a = (*cpA).a - (*cpB).a;
     temp.b = (*cpA).b - (*cpB).b;
-    
+
     printf("The result of the subtraction:\n");
     print_comp(&temp);
 }
@@ -55,7 +57,7 @@ void mult_comp_real(compleX *cp, double scalar)
     compleX temp;
     temp.a = (*cp).a * scalar;
     temp.b = (*cp).b * scalar;
-    
+
     printf("The result of the multiplication with scalar:\n");
     print_comp(&temp);
 
@@ -69,7 +71,7 @@ void mult_comp_img(compleX *cp, double scalar)
     compleX temp;
     temp.a = (*cp).a * scalar;
     temp.b = -(*cp).b * scalar;
-    
+
     printf("The result of the multiplication with img scalar:\n");
     if (temp.a < 0)
         printf("%.2f + (%.2fi)\n", temp.b, temp.a);
@@ -85,7 +87,7 @@ void mult_comp_comp(compleX *cpA, compleX *cpB)
     compleX temp;
     temp.a = ((*cpA).a * (*cpB).a) - ((*cpA).b * (*cpB).b);
     temp.b = ((*cpA).a * (*cpB).b) + ((*cpA).b * (*cpB).a);
-    
+
     printf("The result of the multiplication of two complex numbers:\n");
     print_comp(&temp);
 }
